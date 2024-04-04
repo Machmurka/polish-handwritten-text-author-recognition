@@ -70,9 +70,10 @@ class RawData:
             filename: Nazwa pod jaką słowo ma być zapisane
 
         '''
-        if os.path.exists(filename):
+        if os.path.exists(filename+'.png'):
             print(f"File {filename} already exists.")
         else:
+
             subimage = np.array(subimage)
             plt.imshow(subimage, cmap='gray')
             plt.axis('off') 
@@ -125,6 +126,7 @@ class RawData:
 
                     # Zmiana nazwy na słowo+wystąpienie 
                     word = row_values[1]
+                    word = word.replace('/', '_')
                     if word in words.keys():
                         words[word]-=1
                         word= word+str(words[word]) if words[word] > 0 else word
@@ -134,8 +136,10 @@ class RawData:
                         # print(f"after \n word: {word}, count: {words[word]}")
 
                     filename="Data/author" + str(author_no + 1) + "/skany/slowa/"+word
-                    if os.path.exists(filename) == False :
+                
 
+                    if os.path.exists(filename+".png") == False :
+                        
                         row1, column1, row2, column2 = int(row_values[2]), int(row_values[3]), \
                             int(row_values[4]), int(row_values[5])
                         subimage = image[row1:row2,column1:column2] 
