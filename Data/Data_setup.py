@@ -6,6 +6,10 @@ from pathlib import Path
 from collections import Counter
 import numpy as np
 from tqdm.auto import tqdm
+
+import torch
+from torchvision import datasets, transforms
+
 # print(Path(__file__).resolve())
 
 class RawData:
@@ -37,7 +41,7 @@ class RawData:
             row_values = lines[i].split()
             if len(row_values) != 0 and row_values[0] != '%':
                 words.append(row_values[1])
-                # print(f"i: {i} row_values: {row_values[1]}")
+
 
         word_counts=Counter(words)
         
@@ -60,24 +64,28 @@ class RawData:
         word_counts = self.count_word_occurrences(AuthorText)
         return {word: count for word, count in word_counts.items() if count > 1}
     
-    def save_word_to_png(self, subimage, filename)->None:
+    def save_word_to_bmp(self, subimage, filename)->None:
         '''
         Zapis słowa do pliku png w folderze autor/slowa 
-        Sprawdza czy plik o danej nazwie już nie istnieje dla danego autora
 
         Arg:
             subimage: wycinek słowa ze zdjęcia wykorzystując image[row1:row2,column1:column2]
             filename: Nazwa pod jaką słowo ma być zapisane
 
         '''
-        if os.path.exists(filename+'.png'):
+
+        if os.path.exists(filename+'.bmp'):
             print(f"File {filename} already exists.")
         else:
+            try:
 
-            subimage = np.array(subimage)
-            plt.imshow(subimage, cmap='gray')
-            plt.axis('off') 
-            plt.savefig(filename, bbox_inches='tight', pad_inches = 0)
+                mpimg.imsave(filename+'.bmp',subimage)
+            except SystemError:
+                print("An error occurred while saving the image. Skipping...")
+                print(filename)
+                
+
+
 
         
 
@@ -95,9 +103,9 @@ class RawData:
         '''
         
         # System odczytu pliku zostaje taki sam jak w gotowym pliku word_display.py
-        num_of_authors=Num_of_authors
+        Num_of_authors
 
-        for author_no in range(num_of_authors):
+        for author_no in range(Num_of_authors):
 
             file_desc_name = "Data/author" + str(author_no + 1) + "/word_places.txt"
             file_desc_ptr = open(file_desc_name, 'r')
@@ -113,8 +121,8 @@ class RawData:
             image_file_name_prev = ""
             for i in tqdm(range(number_of_lines)):
                 row_values = lines[i].split()
-
-                if len(row_values) != 0 and row_values[0] != '%':
+                # print(len(row_values))
+                if len(row_values) != 0 and row_values[0] != '%' and len(row_values)==6:
                     # number_of_values = len(row_values)
                     image_file_name = "Data/author" + str(author_no + 1) + "\\" + row_values[0][1:-1]
 
@@ -124,13 +132,19 @@ class RawData:
 
 
 
-                    # Zmiana nazwy na słowo+wystąpienie 
                     word = row_values[1]
                     word = word.replace('/', '_')
+                    word = word.replace('"',' ')
+                    word = word.replace('?',' ')
+
+                    if word[0]=='<' or word=='||' or word[0]=='-' or word[-1]=='\\': continue
+                    if word=='com': word+='_'
+
+                    # Zmiana nazwy na słowo+wystąpienie 
                     if word in words.keys():
                         words[word]-=1
                         word= word+str(words[word]) if words[word] > 0 else word
-                        
+                       
                         # print(word)
                         # print(f"\nbefore\nword: {word}, count: {words[word]}")
                         # print(f"after \n word: {word}, count: {words[word]}")
@@ -138,14 +152,18 @@ class RawData:
                     filename="Data/author" + str(author_no + 1) + "/skany/slowa/"+word
                 
 
-                    if os.path.exists(filename+".png") == False :
+                    if os.path.exists(filename+".bmp") == False :
                         
-                        row1, column1, row2, column2 = int(row_values[2]), int(row_values[3]), \
+                        row1, column1, row2, column2 = abs(int(row_values[2])), abs(int(row_values[3])), \
                             int(row_values[4]), int(row_values[5])
                         subimage = image[row1:row2,column1:column2] 
+                        self.save_word_to_bmp(subimage,filename)
+                    
+                    
 
 
-                        self.save_word_to_png(subimage,filename)
+                        
+
                     # plt.title("Author "+str(author_no+1)+", image = "+row_values[0][1:-1]+", word = "+word)
                     # plt.xlabel("X")
                     # plt.ylabel("Y")
@@ -158,11 +176,19 @@ class RawData:
         file_desc_ptr.close()
         
         
+class AuthorImagesDataset:
+    def __init__(self, root_dir, transform=None):
+        self.root_dir = root_dir
+        self.transform = transform if transform else transforms.ToTensor()
+        self.dataset = datasets.ImageFolder(root=self.root_dir, transform=self.transform)
+        print(self.dataset)
 
+    def __len__(self):
+        return len(self.dataset) 
             
-
 
 
 if __name__=='__main__':
     t=RawData()
-    t.save_words_to_file(1)
+    t.save_words_to_file(8)
+    # s=AuthorImagesDataset(r'Data')
