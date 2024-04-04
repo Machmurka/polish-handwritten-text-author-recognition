@@ -190,5 +190,6 @@ class AuthorImagesDataset:
 
 if __name__=='__main__':
     t=RawData()
-    t.save_words_to_file(8)
+    # t.save_words_to_file(8)
     # s=AuthorImagesDataset(r'Data')
+    
