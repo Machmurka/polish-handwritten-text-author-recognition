@@ -8,7 +8,10 @@ import numpy as np
 from tqdm.auto import tqdm
 # print(Path(__file__).resolve())
 
-class TestingSave:
+class RawData:
+    '''
+        Przekształcanie poszczególnych słów autora z tekstówa na 
+    '''
     def __init__(self) -> None:
         pass
 
@@ -107,7 +110,7 @@ class TestingSave:
             words=self.filter_words(text)
 
             image_file_name_prev = ""
-            for i in range(number_of_lines):
+            for i in tqdm(range(number_of_lines)):
                 row_values = lines[i].split()
 
                 if len(row_values) != 0 and row_values[0] != '%':
@@ -129,13 +132,16 @@ class TestingSave:
                         # print(word)
                         # print(f"\nbefore\nword: {word}, count: {words[word]}")
                         # print(f"after \n word: {word}, count: {words[word]}")
-                        
-                    row1, column1, row2, column2 = int(row_values[2]), int(row_values[3]), \
-                        int(row_values[4]), int(row_values[5])
-                    subimage = image[row1:row2,column1:column2] 
 
-                    
-                    self.save_word_to_png(subimage,"Data/author" + str(author_no + 1) + "/skany/slowa/"+word)
+                    filename="Data/author" + str(author_no + 1) + "/skany/slowa/"+word
+                    if os.path.exists(filename) == False :
+
+                        row1, column1, row2, column2 = int(row_values[2]), int(row_values[3]), \
+                            int(row_values[4]), int(row_values[5])
+                        subimage = image[row1:row2,column1:column2] 
+
+
+                        self.save_word_to_png(subimage,filename)
                     # plt.title("Author "+str(author_no+1)+", image = "+row_values[0][1:-1]+", word = "+word)
                     # plt.xlabel("X")
                     # plt.ylabel("Y")
@@ -154,5 +160,5 @@ class TestingSave:
 
 
 if __name__=='__main__':
-    t=TestingSave()
+    t=RawData()
     t.save_words_to_file(1)
