@@ -9,7 +9,8 @@ from torchvision import transforms
 
 if __name__=='__main__':
     
-    DATA_PROCENT=0.03
+    # Porcent wykorzystania całych danych
+    DATA_PROCENT=0.003
     NUM_EPOCHS = 2
     BATCH_SIZE = 32
     LEARNING_RATE = 0.01

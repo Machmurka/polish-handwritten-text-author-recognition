@@ -89,18 +89,18 @@ def train(model: torch.nn.Module,
             loss_fn=loss_fn,
             device=device)
 
-    print(
-        f"Epoch: {epoch+1} | "
-        f"train_loss: {train_loss:.4f} | "
-        f"train_acc: {train_acc:.4f} | "
-        f"test_loss: {test_loss:.4f} | "
-        f"test_acc: {test_acc:.4f}"
-    )
+        print(
+            f"Epoch: {epoch+1} | "
+            f"train_loss: {train_loss:.4f} | "
+            f"train_acc: {train_acc:.4f} | "
+            f"test_loss: {test_loss:.4f} | "
+            f"test_acc: {test_acc:.4f}"
+        )
 
-    results["train_loss"].append(train_loss)
-    results["train_acc"].append(train_acc)
-    results["test_loss"].append(test_loss)
-    results["test_acc"].append(test_acc)
+        results["train_loss"].append(train_loss)
+        results["train_acc"].append(train_acc)
+        results["test_loss"].append(test_loss)
+        results["test_acc"].append(test_acc)
 
     return results
 
@@ -136,7 +136,7 @@ def plot_loss_curves(results: Dict[str, List[float]]):
     plt.subplot(1, 2, 1)
     plt.plot(epochs, loss, label='train_loss')
     plt.plot(epochs, test_loss, label='test_loss')
-    plt.ylim([0,100])
+
     plt.title('Loss')
     plt.xlabel('Epochs')
     plt.legend()
