@@ -50,6 +50,7 @@ def test_step(model: torch.nn.Module,
 
     with torch.inference_mode():
         for batch, (X,y) in enumerate(dataloader):
+            X, y = X.to(device), y.to(device)
             y_logits=model(X)
             
             loss=loss_fn(y_logits,y)

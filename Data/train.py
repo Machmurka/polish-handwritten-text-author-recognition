@@ -9,16 +9,19 @@ from torchvision import transforms
 
 if __name__=='__main__':
     
+    
+    print(os.getcwd())
+
     # Porcent wykorzystania całych danych
     DATA_PROCENT=0.003
     NUM_EPOCHS = 2
     BATCH_SIZE = 32
     LEARNING_RATE = 0.01
     BLOCK_NUM=[3,4,6,3]
-
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    data_dir=r'Data/Words'
+    data_dir=r'Words'
+    print(device)
 
     data_transform= transforms.Compose([transforms.Resize(size=(224,224)),
                     transforms.TrivialAugmentWide(num_magnitude_bins=31),
@@ -32,7 +35,7 @@ if __name__=='__main__':
         DataProcent=DATA_PROCENT
     )
 
-    model=model_builder.ResNet(model_builder.ResNetblock,3,len(class_names),BLOCK_NUM)
+    model=model_builder.ResNet(model_builder.ResNetblock,3,len(class_names),BLOCK_NUM).to(device)
     
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(),

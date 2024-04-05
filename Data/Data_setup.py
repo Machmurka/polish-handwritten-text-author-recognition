@@ -238,8 +238,8 @@ def create_dataloaders(
         batch_size: int,
         DataProcent:float
 ):
-    t=RawData()
-    t.save_words_to_file(8)
+    # t=RawData()
+    # t.save_words_to_file(8)
     s=AuthorImagesDataset(DatasetDir,batch_size,DataProcent,transform)
     
     return s.train_dataloader,s.test_dataloader,s.dataset.classes
