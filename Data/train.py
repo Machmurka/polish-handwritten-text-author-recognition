@@ -4,7 +4,7 @@ Trains a PyTorch image classification model using device-agnostic code.
 
 import os
 import torch
-import data_setup, engine, model_builder
+import data_setup, engine, model_builder, Data.utils as utils
 from torchvision import transforms
 
 if __name__=='__main__':
@@ -54,5 +54,10 @@ if __name__=='__main__':
                device=device)
     
     # train_features_batch, train_labels_batch = next(iter(train_dataloader))
+
+    utils.save_model(model=model,
+                 target_dir="models",
+                 model_name="ResNet50-Transform224x224-NoShedule-NoDropOut.pth")
+    
 
     engine.plot_loss_curves(results)
